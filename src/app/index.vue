@@ -1,30 +1,35 @@
 <template>
-  <v-ons-page>
-    <v-ons-toolbar>
-      <div class="center">{{ title }}</div>
-      <div class="right">
-        <v-ons-toolbar-button>
-          <v-ons-icon icon="ion-navicon, material: md-menu"></v-ons-icon>
-        </v-ons-toolbar-button>
-      </div>
-    </v-ons-toolbar>
-    <div style="text-align: center; padding-top:10px">THIS IS MY NEW PROJECT</div>
-    <p style="text-align: center">
-      <v-ons-button @click="alert">Click Me!</v-ons-button>
-    </p>
-  </v-ons-page>
+  <!-- use component tag and simple router system with :is directive -->
+  <component :is="current_view"></component>
 </template>
 <script>
-  export default{
+  import library from './library.vue';
+  import reader from './reader.vue';
+  import vocabList from './vocabList.vue';
+  import eventBus from './../eventBus.js';
+
+  export default {
     data() {
       return {
-        title: 'My app'
+        currentView: 'vocabList',
       };
     },
-    methods: {
-      alert() {
-        this.$ons.notification.alert('This is an Onsen UI alert notification test.');
-      }
-    }
+    components: {
+      library,
+      reader,
+      vocabList,
+    },
+    computed: {
+      current_view() {
+        return this.currentView;
+      },
+    },
+    mounted() {
+      const that = this;
+      eventBus.$on('changePage', (page) => {
+        that.currentView = page;
+        console.log('Event received: ' + page);
+      });
+    },
   };
 </script>
